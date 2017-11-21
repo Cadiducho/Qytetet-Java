@@ -58,6 +58,10 @@ public class TituloPropiedad {
         this.propietario = jugador;
     }
     
+    /**
+     * Comprobar si el Titulo tiene dueño
+     * @return true si propietario no es nulo.
+     */
     public boolean tengoPropietario() {
         return getPropietario() != null;
     }

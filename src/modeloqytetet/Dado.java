@@ -15,6 +15,9 @@ public class Dado {
         return instance;
     }
     
+    /**
+     * @return Devuelve un número aleatorio entre 1 y 6.
+     */
     int tirar() {
         return rnd.nextInt(6) + 1;
     }

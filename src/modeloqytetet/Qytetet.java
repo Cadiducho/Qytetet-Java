@@ -2,6 +2,7 @@ package modeloqytetet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Qytetet {
     
@@ -12,7 +13,9 @@ public class Qytetet {
     int SALDO_SALIDA = 1000;
     
     private static final Qytetet instance = new Qytetet();
-    private final ArrayList<Sorpresa> mazo = new ArrayList();
+    private final ArrayList<Sorpresa> mazo = new ArrayList<>();
+    private final ArrayList<Jugador> jugadores = new ArrayList<>();
+    private Jugador jugadorActual = null;
     private Tablero tablero;
     
     private Qytetet() {
@@ -57,7 +60,7 @@ public class Qytetet {
     }
     
     public Jugador getJugadorActual() {
-        throw new UnsupportedOperationException("Sin implementar"); 
+        return jugadorActual;
     }
     
     public boolean hipotecarPropiedad(Casilla casilla) {
@@ -81,11 +84,23 @@ public class Qytetet {
     }
     
     public List<Casilla> propiedadesHipotecadasJugador(boolean hipotecadas) {
-        throw new UnsupportedOperationException("Sin implementar"); 
+        return jugadorActual.obtenerPropiedadesHipotecadas(hipotecadas).stream().map(TituloPropiedad::getCasilla).collect(Collectors.toList());
+    }
+    
+    public List<Jugador> getJugadores() {
+        return this.jugadores;
     }
     
     public Jugador siguienteJugador() {
-        throw new UnsupportedOperationException("Sin implementar"); 
+        int nextPlayer = 0;
+        if (jugadorActual != null) {
+            int index = jugadores.indexOf(jugadorActual);
+            if (index > (jugadores.size() - 1)) {
+                nextPlayer = index;
+            }
+        }
+        jugadorActual = jugadores.get(nextPlayer);
+        return jugadorActual;
     }
     
     public boolean venderPropiedad(Casilla casilla) {
@@ -93,7 +108,7 @@ public class Qytetet {
     }
     
     private void encarcelarJugador() {
-        throw new UnsupportedOperationException("Sin implementar");
+
     }
     
     private void inicializarCartasSorpresa() {
@@ -109,8 +124,8 @@ public class Qytetet {
         mazo.add(new Sorpresa("Elisabeth II te ha dado un indulto y puedes abandonar la prisión", 0, TipoSorpresa.SALIRCARCEL));
     }
     
-    private void inicializarJugadores(String... nombres) {
-        throw new UnsupportedOperationException("Sin implementar");
+    private void inicializarJugadores(List<String> nombres) {
+        nombres.forEach(n -> jugadores.add(new Jugador(n)));
     }
     
     private void inicializarTablero() {
@@ -118,6 +133,9 @@ public class Qytetet {
     }
     
     private void salidaJugadores() {
-        throw new UnsupportedOperationException("Sin implementar");
+        jugadores.forEach(j -> {
+            j.setCasillaActual(tablero.obtenerCasillaNumero(0));
+            j.setSaldo(7500);
+        });
     }
 }

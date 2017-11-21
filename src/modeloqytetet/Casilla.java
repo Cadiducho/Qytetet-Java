@@ -14,12 +14,12 @@ public class Casilla {
         this.numeroCasilla = numCasilla;
     }
 
-    public Casilla(int coste, int numCasilla) {
+    public Casilla(int coste, int numCasilla, TituloPropiedad propiedad) {
         this.numeroCasilla = numCasilla;
         this.coste = coste;
+        setTitulo(propiedad);
         tipo = TipoCasilla.CALLE;
     }
-
 
     public int getNumeroCasilla() {
         return numeroCasilla;
@@ -53,7 +53,7 @@ public class Casilla {
         return titulo;
     }
 
-    public void setTitulo(TituloPropiedad titulo) {
+    private void setTitulo(TituloPropiedad titulo) {
         this.titulo = titulo;
         this.titulo.setCasilla(this);
     }
@@ -82,12 +82,23 @@ public class Casilla {
         throw new UnsupportedOperationException("Sin implementar");
     }
 
-    int estaHipotecada() {
-        throw new UnsupportedOperationException("Sin implementar");
+    /**
+     * Comprobar si una casilla está hipotecada
+     * @return verdadero si el título de propiedad indica que está hipotecado
+     */
+    boolean estaHipotecada() {
+        return titulo.isHipotecada();
     }
 
+    /**
+     * El coste de la hipoteca en función de sus casas y hoteles. -1 si no tiene título de propiedad
+     * @return  Coste de la hipoteca
+     */
     int getCosteHipoteca() {
-        throw new UnsupportedOperationException("Sin implementar");
+        if (getTitulo() == null) return -1;
+        
+        Double cantidadRecibida = getTitulo().getHipotecaBase() + numCasas * 0.5 * getTitulo().getHipotecaBase() + numHoteles * getTitulo().getHipotecaBase();
+        return cantidadRecibida.intValue();
     }
 
     int getPrecioEdificar() {
@@ -102,8 +113,14 @@ public class Casilla {
         throw new UnsupportedOperationException("Sin implementar");
     }
 
+    /**
+     * Verdadero si tiene propietario y este está en carcelado
+     * @return 
+     */
     boolean propietarioEncarcelado() {
-        throw new UnsupportedOperationException("Sin implementar");
+        if (!tengoPropietario()) return false;
+        
+        return getTitulo().getPropietario().getEncarcelado();
     }
 
     boolean sePuedeEdificarCasa() {
@@ -114,12 +131,22 @@ public class Casilla {
         throw new UnsupportedOperationException("Sin implementar");
     }
 
+    /**
+     * Comprobar si se puede edificar en la casilla
+     * @return cierto sólo si es una casilla de tipo CALLE.
+     */
     boolean soyEdificable() {
-        throw new UnsupportedOperationException("Sin implementar");
+        return this.tipo == TipoCasilla.CALLE;
     }
 
+    /**
+     * Verdadero si tiene un titulo de propiedad y este tiene propietario
+     * @return True or false
+     */
     boolean tengoPropietario() {
-        throw new UnsupportedOperationException("Sin implementar");
+        if (getTitulo() == null) return false;
+        
+        return getTitulo().tengoPropietario();
     }
 
     int venderTitulo() {
