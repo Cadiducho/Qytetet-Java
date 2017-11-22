@@ -19,6 +19,10 @@ public class Jugador {
         this.saldo = 7500;
         propiedades = new ArrayList<>();
     }
+    
+    public String getName() {
+        return nombre;
+    }
 
     public Casilla getCasillaActual() {
         return this.casillaActual;
@@ -40,15 +44,61 @@ public class Jugador {
         return this.propiedades;
     }
 
+    /**
+     * Actualizar la posición de un jugador
+     * @param casilla Casilla a donde va
+     * @return true si la casilla destino tiene propietario
+     */
     boolean actualizarPosicion(Casilla casilla) {
-        this.casillaActual = casilla;
-        throw new UnsupportedOperationException("Sin implementar");
+        //Si pasa por la casilla de salida, dar saldo
+        if (casilla.getNumeroCasilla() < casillaActual.getNumeroCasilla()) {
+            modificarSaldo(Qytetet.getInstance().SALDO_SALIDA);
+        }
+        
+        boolean tienePropietario = false;
+        setCasillaActual(casilla);
+        if (casilla.soyEdificable()) {
+            tienePropietario = casilla.tengoPropietario();
+            if (tienePropietario) {
+                if (!casilla.propietarioEncarcelado()) {
+                    int costeAlquiler = casilla.cobrarAlquiler();
+                    modificarSaldo(-1 * costeAlquiler);
+                }
+            }
+        } else if (casilla.getTipo() == TipoCasilla.IMPUESTO) {
+            int coste = casilla.getCoste();
+            modificarSaldo(-1 * coste);
+        }
+        
+        return tienePropietario;
     }
 
+    /**
+     * El jugador intenta comprar un titulo de propiedad
+     * @return true si la compra ha sido correcta
+     */
     boolean comprarTitulo() {
-        throw new UnsupportedOperationException("Sin implementar");
+        boolean puedoComprar = false;
+        
+        if (casillaActual.soyEdificable()) {
+            if (!casillaActual.tengoPropietario()) {
+                int costeCompra = casillaActual.getCoste();
+                if (costeCompra <= saldo) {
+                    TituloPropiedad titulo = casillaActual.asignarPropietario(this);
+                    propiedades.add(titulo);
+                    modificarSaldo(-1 * costeCompra);
+                    
+                    puedoComprar = false;
+                }
+            }
+        }
+        return puedoComprar;
     }
 
+    /**
+     * Quitar la carta de libertad de un jugador
+     * @return La carta
+     */
     Sorpresa devolverCartaLibertad() {
         Sorpresa old = cartaLibertad;
         Qytetet.getInstance().getMazo().add(old);
@@ -56,8 +106,13 @@ public class Jugador {
         return old;
     }
 
+    /**
+     * Mandar a un jugador a la cárcel
+     * @param casilla La cárcel
+     */
     void irACarcel(Casilla casilla) {
-        throw new UnsupportedOperationException("Sin implementar");
+        setCasillaActual(casilla);
+        setEncarcelado(true);
     }
 
     /**
@@ -99,23 +154,34 @@ public class Jugador {
      * Se resta al jugador una cantidad de dinero tantas casas y hoteles como tenga
      * @param cantidad Cantidad a pagar por cada casa u hotel
      */
-    void pagarCobrarPorCasaYHotel(int cantidad) {
-        int multiplicador = 0;
-        propiedades.stream().map(t -> t.getCasilla().getNumCasas() + t.getCasilla().getNumHoteles()).reduce(multiplicador, Integer::sum);
-        
-        modificarSaldo(-1 * multiplicador * cantidad);
+    void pagarCobrarPorCasaYHotel(int cantidad) {       
+        modificarSaldo(-1 * cantidad * cuantasCasasHotelesTengo());
     }
 
-    boolean pagarLibertad(int cantidad /*: int = PrecioLibertad*/) {
-        throw new UnsupportedOperationException("Sin implementar");
+    /**
+     * Pagar la libertad para salir de la cárcel
+     * @param precioLibertad Precio de salida de la cárcel
+     * @return true si puede pagarlo
+     */
+    boolean pagarLibertad(int precioLibertad) {
+        boolean tengoSaldo = tengoSaldo(precioLibertad);
+        if (tengoSaldo) {
+            modificarSaldo(-1 * precioLibertad);
+        }
+        return tengoSaldo;
     }
 
+    /**
+     * Comprobar si puedo edificar una casa en una casilla
+     * @param casilla La casilla a edificar
+     * @return true si es mía y puedo pagarlo
+     */
     boolean puedoEdificarCasa(Casilla casilla) {
-        throw new UnsupportedOperationException("Sin implementar");
+        return esDeMiPropiedad(casilla) && tengoSaldo(casilla.getPrecioEdificar());
     }
 
     boolean puedoEdificarHotel(Casilla casilla) {
-        throw new UnsupportedOperationException("Sin implementar");
+        return esDeMiPropiedad(casilla) && tengoSaldo(casilla.getPrecioEdificar());
     }
 
     /**
@@ -124,7 +190,7 @@ public class Jugador {
      * @return 
      */
     boolean puedoHipotecar(Casilla casilla) {
-        return esDeMipropiedad(casilla);
+        return esDeMiPropiedad(casilla);
     }
 
     /**
@@ -133,7 +199,7 @@ public class Jugador {
      * @return 
      */
     boolean puedoPagarHipoteca(Casilla casilla) {
-        return (esDeMipropiedad(casilla) && (casilla.getCosteHipoteca() * 1.10) <= saldo);
+        return (esDeMiPropiedad(casilla) && (casilla.calcularValorHipoteca() * 1.10) <= saldo);
     }
 
     /**
@@ -165,8 +231,17 @@ public class Jugador {
         return cartaLibertad != null;
     }
 
+    /**
+     * El jugador vende una propiedad
+     * @param casilla Casilla a vender
+     */
     void venderPropiedad(Casilla casilla) {
-        throw new UnsupportedOperationException("Sin implementar");
+        int precioVenta = casilla.venderTitulo();
+        casilla.getTitulo().setPropietario(null);
+        casilla.setNumCasas(0);
+        casilla.setNumHoteles(0);
+        modificarSaldo(precioVenta);
+        eliminarDeMisPropiedades(casilla);
     }
 
     /**
@@ -190,7 +265,7 @@ public class Jugador {
      * @param casilla Casilla a comprobar
      * @return Cierto si el jugador tiene entre sus propiedades el título de propiedad de esa casilla.
      */
-    private boolean esDeMipropiedad(Casilla casilla) {
+    private boolean esDeMiPropiedad(Casilla casilla) {
         return propiedades.stream().map(TituloPropiedad::getCasilla).anyMatch(c -> c.getNumeroCasilla() == casilla.getNumeroCasilla());
     }
 

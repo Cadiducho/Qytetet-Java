@@ -58,28 +58,50 @@ public class Casilla {
         this.titulo.setCasilla(this);
     }
 
+    /**
+     * Asignar a un jugador como dueño de la casilla
+     * @param jugador El jugador dueño
+     * @return El Titulo de Propiedad comprado
+     */
     TituloPropiedad asignarPropietario(Jugador jugador) {
-        throw new UnsupportedOperationException("Sin implementar");
+        titulo.setPropietario(jugador);
+        
+        return titulo;
     }
 
+    /**
+     * El coste de la hipoteca en función de sus casas y hoteles. -1 si no tiene título de propiedad
+     * @return  Coste de la hipoteca
+     */
     int calcularValorHipoteca() {
-        throw new UnsupportedOperationException("Sin implementar");
+        return (int) (getTitulo().getHipotecaBase() + numCasas * 0.5 * getTitulo().getHipotecaBase() + numHoteles * getTitulo().getHipotecaBase());
     }
 
     int cancelarHipoteca() {
-        throw new UnsupportedOperationException("Sin implementar");
+        titulo.setHipotecada(false);
+        return (int) ((int) calcularValorHipoteca() * 1.10);
     }
 
+    /**
+     * Obtener el coste del alquiler en función de sus casas y hoteles construidos
+     * @return Coste del alquiler de la casilla
+     */
     int cobrarAlquiler() {
-        throw new UnsupportedOperationException("Sin implementar");
+        return (int) (getTitulo().getAlquilerBase() + (numCasas * 0.5 + numHoteles * 2));
     }
 
+    /**
+     * Edificar una casa en la casilla
+     * @return coste de construcción
+     */
     int edificarCasa() {
-        throw new UnsupportedOperationException("Sin implementar");
+        numCasas++;
+        return getPrecioEdificar();
     }
 
     int edificarHotel() {
-        throw new UnsupportedOperationException("Sin implementar");
+        numHoteles++;
+        return getPrecioEdificar();
     }
 
     /**
@@ -91,22 +113,20 @@ public class Casilla {
     }
 
     /**
-     * El coste de la hipoteca en función de sus casas y hoteles. -1 si no tiene título de propiedad
-     * @return  Coste de la hipoteca
+     * Coste por edificar
+     * @return coste
      */
-    int getCosteHipoteca() {
-        if (getTitulo() == null) return -1;
-        
-        Double cantidadRecibida = getTitulo().getHipotecaBase() + numCasas * 0.5 * getTitulo().getHipotecaBase() + numHoteles * getTitulo().getHipotecaBase();
-        return cantidadRecibida.intValue();
-    }
-
     int getPrecioEdificar() {
-        throw new UnsupportedOperationException("Sin implementar");
+        return titulo.getPrecioEdificar();
     }
 
+    /**
+     * Hipotecar una casilla
+     * @return cantidad de dinero recibida por hipotecarla
+     */
     int hipotecar() {
-        throw new UnsupportedOperationException("Sin implementar");
+        getTitulo().setHipotecada(true);
+        return calcularValorHipoteca();
     }
 
     int precioTotalComprar() {
@@ -114,21 +134,27 @@ public class Casilla {
     }
 
     /**
-     * Verdadero si tiene propietario y este está en carcelado
-     * @return 
+     * Comprobar si tiene propietario encarcelado
+     * @return true si tiene propietario y este está encarcelado
      */
     boolean propietarioEncarcelado() {
-        if (!tengoPropietario()) return false;
-        
-        return getTitulo().getPropietario().getEncarcelado();
+        return tengoPropietario() ? getTitulo().propietaroEncarcelado() : false;
     }
 
+    /**
+     * Comprobar si se pueden edificar más casas
+     * @return true si numCasas es mejor que cuatro
+     */
     boolean sePuedeEdificarCasa() {
-        throw new UnsupportedOperationException("Sin implementar");
+        return (numCasas < 4);
     }
 
+    /**
+     * Comprobar si se pueden edificar más hoteles
+     * @return true si numHoteles es mejor que cuatro
+     */
     boolean sePuedeEdificarHotel() {
-        throw new UnsupportedOperationException("Sin implementar");
+        return (numHoteles < 4);
     }
 
     /**
@@ -140,17 +166,19 @@ public class Casilla {
     }
 
     /**
-     * Verdadero si tiene un titulo de propiedad y este tiene propietario
-     * @return True or false
+     * Comprobar si la casilla tiene propietario 
+     * @return True si tiene un titulo de propiedad y este tiene propietario
      */
     boolean tengoPropietario() {
-        if (getTitulo() == null) return false;
-        
-        return getTitulo().tengoPropietario();
+        return (getTitulo() != null) ? getTitulo().tengoPropietario() : false;
     }
 
+    /**
+     * Obtener el precio por el que se va a vender la casilla
+     * @return Precio de venta
+     */
     int venderTitulo() {
-        throw new UnsupportedOperationException("Sin implementar");
+        return (int) (coste + titulo.getFactorRevalorizacion() * (coste + (numCasas + numHoteles) * titulo.getPrecioEdificar()));
     }
 
     @Override

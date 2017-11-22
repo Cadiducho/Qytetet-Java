@@ -66,6 +66,10 @@ public class TituloPropiedad {
         return getPropietario() != null;
     }
     
+    /**
+     * Comprobar si tiene propietario encarcelado
+     * @return true si tiene propietario y este está encarcelado
+     */
     public boolean propietaroEncarcelado() {
         return tengoPropietario() ? getPropietario().getEncarcelado() : false;
     }
