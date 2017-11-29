@@ -26,7 +26,16 @@ public class Sorpresa {
 
     @Override
     public String toString() {
-        return "Sorpresa{" + "texto=" + texto + ", valor="
-                + Integer.toString(valor) + ", tipo=" + tipo + "}";
+        String resumen = texto;
+        String pagasCobras = valor < 0 ? "Pagas" : "Cobras";
+        switch (tipo) {
+            case PAGARCOBRAR: resumen += "\n * " +pagasCobras + Math.abs(valor); break;
+            case IRACASILLA: resumen += "\n * Vas a la " + (Qytetet.getInstance().getTablero().esCasillaCarcel(valor) ? "cárcel" : "casilla " + valor); break;
+            case PORCASAHOTEL: resumen += "\n * " + pagasCobras + " por cada casa y hotel " + Math.abs(valor); break;
+            case PORJUGADOR: resumen += "\n * " + pagasCobras + " a cada jugador " + Math.abs(valor); break;
+            case SALIRCARCEL: resumen += "\n * Podrás salir de la cárcel"; break;
+        } 
+        
+        return resumen;
     }
 }

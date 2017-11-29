@@ -1,6 +1,7 @@
 package modeloqytetet;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -163,8 +164,8 @@ public class Qytetet {
     
     public void inicializarJuego(List<String> nombres) {
         inicializarJugadores(nombres);
-        inicializarCartasSorpresa();
         inicializarTablero();
+        inicializarCartasSorpresa();
         salidaJugadores();
     }
     
@@ -194,12 +195,10 @@ public class Qytetet {
      * @return true si la casilla en la que cae tiene propietario
      */
     public boolean jugar() {
-        boolean tienePropietario = false;
-        
         int valorDado = Dado.getInstance().tirar();
         Casilla casillaPosicion = jugadorActual.getCasillaActual();
         Casilla nuevaCasilla = tablero.obtenerNuevaCasilla(casillaPosicion, valorDado);
-        tienePropietario = jugadorActual.actualizarPosicion(nuevaCasilla);
+        boolean tienePropietario = jugadorActual.actualizarPosicion(nuevaCasilla);
         
         if (!nuevaCasilla.soyEdificable()) {
             if (nuevaCasilla.getTipo() == TipoCasilla.JUEZ) {
@@ -227,8 +226,8 @@ public class Qytetet {
         int nextPlayer = 0;
         if (jugadorActual != null) {
             int index = jugadores.indexOf(jugadorActual);
-            if (index > (jugadores.size() - 1)) {
-                nextPlayer = index;
+            if (index < (jugadores.size() - 1)) {
+                nextPlayer = index + 1;
             }
         }
         jugadorActual = jugadores.get(nextPlayer);
@@ -255,7 +254,6 @@ public class Qytetet {
         if (!jugadorActual.tengoCartaLibertad()) {
             jugadorActual.irACarcel(tablero.getCarcel());
         } else {
-            
             Sorpresa carta = jugadorActual.devolverCartaLibertad();
             mazo.add(mazo.size(), carta);
         }
@@ -272,10 +270,12 @@ public class Qytetet {
         mazo.add(new Sorpresa("El Presidente te otorga un presupuesto solicitado", 600, TipoSorpresa.PAGARCOBRAR));
         mazo.add(new Sorpresa("Matt Murdock te ha defendido en un juicio y debes pagar sus honorarios", -700, TipoSorpresa.PAGARCOBRAR));
         mazo.add(new Sorpresa("Elisabeth II te ha dado un indulto y puedes abandonar la prisión", 0, TipoSorpresa.SALIRCARCEL));
+        Collections.shuffle(mazo);
     }
     
     private void inicializarJugadores(List<String> nombres) {
         nombres.forEach(n -> jugadores.add(new Jugador(n)));
+        siguienteJugador();
     }
     
     private void inicializarTablero() {

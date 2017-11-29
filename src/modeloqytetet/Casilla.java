@@ -79,7 +79,7 @@ public class Casilla {
 
     int cancelarHipoteca() {
         titulo.setHipotecada(false);
-        return (int) ((int) calcularValorHipoteca() * 1.10);
+        return (int) (calcularValorHipoteca() * 1.10);
     }
 
     /**
@@ -101,6 +101,7 @@ public class Casilla {
 
     int edificarHotel() {
         numHoteles++;
+        numCasas -= 4;
         return getPrecioEdificar();
     }
 
@@ -138,12 +139,12 @@ public class Casilla {
      * @return true si tiene propietario y este está encarcelado
      */
     boolean propietarioEncarcelado() {
-        return tengoPropietario() ? getTitulo().propietaroEncarcelado() : false;
+        return titulo != null ? (tengoPropietario() ? getTitulo().propietaroEncarcelado() : false) : false;
     }
 
     /**
      * Comprobar si se pueden edificar más casas
-     * @return true si numCasas es mejor que cuatro
+     * @return true si numCasas es menor que cuatro
      */
     boolean sePuedeEdificarCasa() {
         return (numCasas < 4);
@@ -151,10 +152,10 @@ public class Casilla {
 
     /**
      * Comprobar si se pueden edificar más hoteles
-     * @return true si numHoteles es mejor que cuatro
+     * @return true si numCasas es igual o mayor que cuatro numHoteles es menor que cuatro
      */
     boolean sePuedeEdificarHotel() {
-        return (numHoteles < 4);
+        return numHoteles < 4 && numCasas >= 4;
     }
 
     /**
@@ -183,9 +184,20 @@ public class Casilla {
 
     @Override
     public String toString() {
-        return "Casilla{" + "numeroCasilla=" + numeroCasilla + ", coste=" + coste + ", numHoteles=" + numHoteles
-                + ", numCasas=" + numCasas + ", tipo=" + tipo + (titulo != null ? (", titulo=" + titulo) : "") + '}';
-    }
+        String resumen = "Casilla #" + numeroCasilla + " (" + tipo.name() + "). ";
+        if (soyEdificable()) { 
+            if (tengoPropietario()) { 
+                resumen += "\n * Propietario: " + titulo.getPropietario().getName() + ". Tiene " + numCasas + " casas y " + numHoteles + " hoteles. "
+                        + "Alquiler: " + cobrarAlquiler() + "$. Hipoteca: " + calcularValorHipoteca() + "$. Hipotecada: " + estaHipotecada();
+            } else {
+                resumen += "\n * En venta por " + coste + "$: " + titulo;
+            }
+        }
 
+        if (propietarioEncarcelado()) {
+            resumen += "\n * Su propietario está encarcelado. ";
+        }
+        return resumen;
+    }
 
 }

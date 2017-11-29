@@ -88,7 +88,7 @@ public class Jugador {
                     propiedades.add(titulo);
                     modificarSaldo(-1 * costeCompra);
                     
-                    puedoComprar = false;
+                    puedoComprar = true;
                 }
             }
         }
@@ -126,6 +126,10 @@ public class Jugador {
     
     void setSaldo(int cantidad) {
         this.saldo = cantidad;
+    }
+    
+    public int getSaldo() {
+        return this.saldo;
     }
 
     /**
@@ -190,7 +194,7 @@ public class Jugador {
      * @return 
      */
     boolean puedoHipotecar(Casilla casilla) {
-        return esDeMiPropiedad(casilla);
+        return esDeMiPropiedad(casilla) && !casilla.estaHipotecada();
     }
 
     /**
@@ -208,7 +212,7 @@ public class Jugador {
      * @return Cierto sólo si la casilla no está hipotecada.
      */
     boolean puedoVenderPropiedad(Casilla casilla) {
-        return casilla.estaHipotecada() && casilla.getTitulo().getPropietario().equals(this);
+        return casilla.estaHipotecada() && esDeMiPropiedad(casilla);
     }
 
     void setCartaLibertad(Sorpresa carta) {

@@ -83,7 +83,7 @@ public class Tablero {
         return numeroCasilla == getCarcel().getNumeroCasilla();
     }
     
-    Casilla obtenerCasillaNumero(int numero) {
+    public Casilla obtenerCasillaNumero(int numero) {
         for (Casilla casilla : casillas) {
             if (casilla.getNumeroCasilla() == numero) {
                 return casilla;
