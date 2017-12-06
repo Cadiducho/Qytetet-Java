@@ -213,6 +213,7 @@ public class Jugador {
      */
     boolean puedoVenderPropiedad(Casilla casilla) {
         return casilla.estaHipotecada() && esDeMiPropiedad(casilla);
+        return !casilla.estaHipotecada() && esDeMiPropiedad(casilla);
     }
 
     void setCartaLibertad(Sorpresa carta) {
