@@ -146,7 +146,7 @@ public class Casilla {
      * Comprobar si se pueden edificar más casas
      * @return true si numCasas es menor que cuatro
      */
-    boolean sePuedeEdificarCasa() {
+    public boolean sePuedeEdificarCasa() {
         return (numCasas < 4);
     }
 
@@ -154,7 +154,7 @@ public class Casilla {
      * Comprobar si se pueden edificar más hoteles
      * @return true si numCasas es igual o mayor que cuatro numHoteles es menor que cuatro
      */
-    boolean sePuedeEdificarHotel() {
+    public boolean sePuedeEdificarHotel() {
         return numHoteles < 4 && numCasas >= 4;
     }
 

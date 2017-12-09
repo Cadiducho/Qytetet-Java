@@ -67,6 +67,13 @@ public class Qytetet {
                     
                 }
                 break;
+            case CONVERTIRME:
+                Especulador espec = jugadorActual.covertirme(cartaActual.getValor());
+                jugadores.remove(jugadorActual);
+                jugadorActual = espec;
+                jugadores.add(jugadorActual);
+                
+                break;
         }
         if (cartaActual.getTipo() == TipoSorpresa.SALIRCARCEL) {
             jugadorActual.setCartaLibertad(cartaActual);
@@ -270,6 +277,8 @@ public class Qytetet {
         mazo.add(new Sorpresa("El Presidente te otorga un presupuesto solicitado", 600, TipoSorpresa.PAGARCOBRAR));
         mazo.add(new Sorpresa("Matt Murdock te ha defendido en un juicio y debes pagar sus honorarios", -700, TipoSorpresa.PAGARCOBRAR));
         mazo.add(new Sorpresa("Elisabeth II te ha dado un indulto y puedes abandonar la prisión", 0, TipoSorpresa.SALIRCARCEL));
+        mazo.add(new Sorpresa("", 3000, TipoSorpresa.CONVERTIRME));
+        mazo.add(new Sorpresa("", 5000, TipoSorpresa.CONVERTIRME));
         Collections.shuffle(mazo);
     }
     

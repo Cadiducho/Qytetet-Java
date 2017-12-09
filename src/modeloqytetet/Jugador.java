@@ -12,12 +12,20 @@ public class Jugador {
     private Casilla casillaActual;
     private Sorpresa cartaLibertad;
     private List<TituloPropiedad> propiedades;
+    protected int factorEspeculador = 1;
 
     public Jugador(String nombre) {
         this.nombre = nombre;
         this.encarcelado = false;
         this.saldo = 7500;
         propiedades = new ArrayList<>();
+    }
+    
+    protected Jugador(Jugador jugador) {
+        this.nombre = jugador.nombre;
+        this.encarcelado = jugador.encarcelado;
+        this.saldo = jugador.saldo;
+        this.propiedades.addAll(jugador.propiedades);
     }
     
     public String getName() {
@@ -49,7 +57,7 @@ public class Jugador {
      * @param casilla Casilla a donde va
      * @return true si la casilla destino tiene propietario
      */
-    boolean actualizarPosicion(Casilla casilla) {
+    protected boolean actualizarPosicion(Casilla casilla) {
         //Si pasa por la casilla de salida, dar saldo
         if (casilla.getNumeroCasilla() < casillaActual.getNumeroCasilla()) {
             modificarSaldo(Qytetet.getInstance().SALDO_SALIDA);
@@ -67,7 +75,7 @@ public class Jugador {
             }
         } else if (casilla.getTipo() == TipoCasilla.IMPUESTO) {
             int coste = casilla.getCoste();
-            modificarSaldo(-1 * coste);
+            pagarImpuestos(coste);
         }
         
         return tienePropietario;
@@ -184,6 +192,11 @@ public class Jugador {
         return esDeMiPropiedad(casilla) && tengoSaldo(casilla.getPrecioEdificar());
     }
 
+    /**
+     * Comprobar si puedo edificar un hotel en una casilla
+     * @param casilla La casilla a edificar
+     * @return true si es mía y puedo pagarlo
+     */
     boolean puedoEdificarHotel(Casilla casilla) {
         return esDeMiPropiedad(casilla) && tengoSaldo(casilla.getPrecioEdificar());
     }
@@ -212,7 +225,6 @@ public class Jugador {
      * @return Cierto sólo si la casilla no está hipotecada.
      */
     boolean puedoVenderPropiedad(Casilla casilla) {
-        return casilla.estaHipotecada() && esDeMiPropiedad(casilla);
         return !casilla.estaHipotecada() && esDeMiPropiedad(casilla);
     }
 
@@ -279,8 +291,25 @@ public class Jugador {
      * @param cantidad Cantidad a comprobar
      * @return verdadero si el saldo del jugador es superior o igual a cantidad.
      */
-    private boolean tengoSaldo(int cantidad) {
+    protected boolean tengoSaldo(int cantidad) {
         return (cantidad <= this.saldo);
+    }
+    
+    /**
+     * Un jugador paga impuestos
+     * @param cantidad Cantidad a pagar
+     */
+    protected void pagarImpuestos(int cantidad) {
+          modificarSaldo(-1 * cantidad);
+    }
+    
+    /**
+     * Convierte a un jugador en un especulador
+     * @param fianza Su fianza
+     * @return Especulador
+     */
+    protected Especulador covertirme(int fianza) {
+        return new Especulador(this, fianza);        
     }
     
     @Override
