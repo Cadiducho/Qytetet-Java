@@ -9,7 +9,7 @@ public class TituloPropiedad {
     private final int hipotecaBase;
     private final int precioEdificar;
     private Jugador propietario;
-    private Casilla casilla;
+    private Calle calle;
     
     public TituloPropiedad(String nombre, int alquilerBase, float factorRevalorizacion, int hipotecaBase, int precioEdificar) {
         this.nombre = nombre;
@@ -19,7 +19,7 @@ public class TituloPropiedad {
         this.precioEdificar = precioEdificar;
         hipotecada = false;
         propietario = null;
-        casilla = null;
+        calle = null;
     }
 
     public String getNombre() {
@@ -74,12 +74,12 @@ public class TituloPropiedad {
         return tengoPropietario() ? getPropietario().getEncarcelado() : false;
     }
     
-    public Casilla getCasilla() {
-        return this.casilla;
+    public Calle getCalle() {
+        return this.calle;
     }
     
-    public void setCasilla(Casilla casilla) {
-        this.casilla = casilla;
+    public void setCalle(Calle casilla) {
+        this.calle = casilla;
     }
 
     @Override

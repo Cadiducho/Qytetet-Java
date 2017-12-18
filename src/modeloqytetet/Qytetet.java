@@ -89,10 +89,14 @@ public class Qytetet {
      * @return true si se ha cancelado la hipoteca
      */
     public boolean cancelarHipoteca(Casilla casilla) {
-        boolean cancelada = jugadorActual.puedoPagarHipoteca(casilla);
-        if (cancelada) {
-            int aPagar = casilla.cancelarHipoteca();
-            jugadorActual.modificarSaldo(-1 * aPagar);
+        boolean cancelada = false;
+        if (casilla.soyEdificable()) {
+            Calle calle = (Calle) casilla;
+            cancelada = jugadorActual.puedoPagarHipoteca(calle);
+            if (cancelada) {
+                int aPagar = calle.cancelarHipoteca();
+                jugadorActual.modificarSaldo(-1 * aPagar);
+            }
         }
         return cancelada;
     }
@@ -113,10 +117,11 @@ public class Qytetet {
     public boolean edificarCasa(Casilla casilla) {
         boolean puedoEdificar = false;
         if (casilla.soyEdificable()) {
-            if (casilla.sePuedeEdificarCasa()) {
-                puedoEdificar = jugadorActual.puedoEdificarCasa(casilla);
+            Calle calle = (Calle) casilla;
+            if (calle.sePuedeEdificarCasa()) {
+                puedoEdificar = jugadorActual.puedoEdificarCasa(calle);
                 if (puedoEdificar) {
-                    int costeEdificarCasa = casilla.edificarCasa();                
+                    int costeEdificarCasa = calle.edificarCasa();                
                     jugadorActual.modificarSaldo(-1 * costeEdificarCasa);
                 }
             }
@@ -125,13 +130,19 @@ public class Qytetet {
         return puedoEdificar;
     }
     
+    /**
+     * Intentar edificar un hotel en la casilla
+     * @param casilla Casilla a edificar
+     * @return true si se ha edificado
+     */
     public boolean edificarHotel(Casilla casilla) {
         boolean puedoEdificar = false;
         if (casilla.soyEdificable()) {
-            if (casilla.sePuedeEdificarHotel()) {
-                puedoEdificar = jugadorActual.puedoEdificarHotel(casilla);
+            Calle calle = (Calle) casilla;
+            if (calle.sePuedeEdificarHotel()) {
+                puedoEdificar = jugadorActual.puedoEdificarHotel(calle);
                 if (puedoEdificar) {
-                    int costeEdificarHotel = casilla.edificarHotel();
+                    int costeEdificarHotel = calle.edificarHotel();
                     jugadorActual.modificarSaldo(-1 * costeEdificarHotel);
                 }
             }
@@ -157,11 +168,12 @@ public class Qytetet {
         boolean puedoHipotecar = false;
         
         if (casilla.soyEdificable()) {
-            boolean sePuedeHipotecar = !casilla.estaHipotecada();
+            Calle calle = (Calle) casilla;
+            boolean sePuedeHipotecar = !calle.estaHipotecada();
             if (sePuedeHipotecar) {
-                puedoHipotecar = jugadorActual.puedoHipotecar(casilla);
+                puedoHipotecar = jugadorActual.puedoHipotecar(calle);
                 if (puedoHipotecar) {
-                    int cantidadRecibida = casilla.hipotecar();
+                    int cantidadRecibida = calle.hipotecar();
                     jugadorActual.modificarSaldo(cantidadRecibida);
                 }
             }
@@ -222,7 +234,7 @@ public class Qytetet {
     }
     
     public List<Casilla> propiedadesHipotecadasJugador(boolean hipotecadas) {
-        return jugadorActual.obtenerPropiedadesHipotecadas(hipotecadas).stream().map(TituloPropiedad::getCasilla).collect(Collectors.toList());
+        return jugadorActual.obtenerPropiedadesHipotecadas(hipotecadas).stream().map(TituloPropiedad::getCalle).collect(Collectors.toList());
     }
     
     public List<Jugador> getJugadores() {
@@ -247,9 +259,13 @@ public class Qytetet {
      * @return true si la has vendido
      */
     public boolean venderPropiedad(Casilla casilla) {
-        boolean puedoVender = jugadorActual.puedoVenderPropiedad(casilla);
-        if (puedoVender) {
-            jugadorActual.venderPropiedad(casilla);
+        boolean puedoVender = false;
+        if (casilla.soyEdificable()) {
+            Calle calle = (Calle) casilla;
+            puedoVender = jugadorActual.puedoVenderPropiedad(calle);
+            if (puedoVender) {
+                jugadorActual.venderPropiedad(calle);
+            }
         }
         return puedoVender;
     }

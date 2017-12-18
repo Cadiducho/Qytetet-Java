@@ -3,6 +3,7 @@ package interfaztextualqytetet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import modeloqytetet.Calle;
 import modeloqytetet.Casilla;
 import modeloqytetet.Jugador;
 import modeloqytetet.MetodoSalirCarcel;
@@ -109,8 +110,7 @@ public class ControladorQytetet {
             if (jugador.tengoPropiedades() && !jugador.getEncarcelado() && jugador.getSaldo() > 0) {
                 int gestion = vista.menuGestionInmobiliaria();
                 if (gestion != 0) {
-                    int numPropiedad = vista.menuElegirPropiedad(jugador.getPropiedades().stream().map(TituloPropiedad::getNombre).collect(Collectors.toList()));
-                    Casilla editCasilla = juego.getJugadorActual().getPropiedades().get(numPropiedad).getCasilla();
+                    Casilla editCasilla = elegirPropiedad(jugador.getPropiedades().stream().map(TituloPropiedad::getCalle).collect(Collectors.toList()));
                     switch (gestion) {
                         case 1: 
                             boolean edificada = juego.edificarCasa(editCasilla);
@@ -167,11 +167,11 @@ public class ControladorQytetet {
     public Casilla elegirPropiedad(List<Casilla> propiedades) {
         //este metodo toma una lista de propiedades y genera una lista de strings, con el numero y nombre de las propiedades
         //luego llama a la vista para que el usuario pueda elegir.
-        vista.mostrar("\tCasilla\tTitulo");
+        vista.mostrar("\tCalle\tTitulo");
         int seleccion;
         ArrayList<String> listaPropiedades = new ArrayList<>();
         
-        propiedades.forEach(c -> listaPropiedades.add("\t" + c.getNumeroCasilla() + "\t" + c.getTitulo().getNombre()));
+        propiedades.stream().map(Calle.class::cast).forEach(c -> listaPropiedades.add("\t" + c.getNumeroCasilla() + "\t" + c.getTitulo().getNombre()));
         
         seleccion = vista.menuElegirPropiedad(listaPropiedades);
         return propiedades.get(seleccion);

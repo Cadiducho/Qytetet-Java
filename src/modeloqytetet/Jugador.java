@@ -18,14 +18,16 @@ public class Jugador {
         this.nombre = nombre;
         this.encarcelado = false;
         this.saldo = 7500;
-        propiedades = new ArrayList<>();
+        this.propiedades = new ArrayList<>();
     }
     
     protected Jugador(Jugador jugador) {
         this.nombre = jugador.nombre;
         this.encarcelado = jugador.encarcelado;
         this.saldo = jugador.saldo;
-        this.propiedades.addAll(jugador.propiedades);
+        this.propiedades = new ArrayList<>();
+        
+        jugador.getPropiedades().forEach(propiedades::add);
     }
     
     public String getName() {
@@ -70,10 +72,11 @@ public class Jugador {
         boolean tienePropietario = false;
         setCasillaActual(casilla);
         if (casilla.soyEdificable()) {
-            tienePropietario = casilla.tengoPropietario();
+            Calle calle = (Calle) casilla;
+            tienePropietario = calle.tengoPropietario();
             if (tienePropietario) {
-                if (!casilla.propietarioEncarcelado()) {
-                    int costeAlquiler = casilla.cobrarAlquiler();
+                if (!calle.propietarioEncarcelado()) {
+                    int costeAlquiler = calle.cobrarAlquiler();
                     modificarSaldo(-1 * costeAlquiler);
                 }
             }
@@ -93,10 +96,11 @@ public class Jugador {
         boolean puedoComprar = false;
         
         if (casillaActual.soyEdificable()) {
-            if (!casillaActual.tengoPropietario()) {
-                int costeCompra = casillaActual.getCoste();
+            Calle calle = (Calle) casillaActual;
+            if (!calle.tengoPropietario()) {
+                int costeCompra = calle.getCoste();
                 if (costeCompra <= saldo) {
-                    TituloPropiedad titulo = casillaActual.asignarPropietario(this);
+                    TituloPropiedad titulo = calle.asignarPropietario(this);
                     propiedades.add(titulo);
                     modificarSaldo(-1 * costeCompra);
                     
@@ -152,7 +156,7 @@ public class Jugador {
      */
     int obtenerCapital() {
         return propiedades.stream()
-                .map(t -> t.getCasilla().getCoste() + t.getPrecioEdificar() * (t.getCasilla().getNumCasas() + t.getCasilla().getNumHoteles()))
+                .map(t -> t.getCalle().getCoste() + t.getPrecioEdificar() * (t.getCalle().getNumCasas() + t.getCalle().getNumHoteles()))
                 .reduce(saldo, Integer::sum);
     }
 
@@ -188,48 +192,48 @@ public class Jugador {
     }
 
     /**
-     * Comprobar si puedo edificar una casa en una casilla
-     * @param casilla La casilla a edificar
+     * Comprobar si puedo edificar una casa en una calle
+     * @param calle La calle a edificar
      * @return true si es mía y puedo pagarlo
      */
-    boolean puedoEdificarCasa(Casilla casilla) {
-        return esDeMiPropiedad(casilla) && tengoSaldo(casilla.getPrecioEdificar());
+    boolean puedoEdificarCasa(Calle calle) {
+        return esDeMiPropiedad(calle) && tengoSaldo(calle.getPrecioEdificar());
     }
 
     /**
-     * Comprobar si puedo edificar un hotel en una casilla
-     * @param casilla La casilla a edificar
+     * Comprobar si puedo edificar un hotel en una calle
+     * @param casilla La calle a edificar
      * @return true si es mía y puedo pagarlo
      */
-    boolean puedoEdificarHotel(Casilla casilla) {
-        return esDeMiPropiedad(casilla) && tengoSaldo(casilla.getPrecioEdificar());
+    boolean puedoEdificarHotel(Calle calle) {
+        return esDeMiPropiedad(calle) && tengoSaldo(calle.getPrecioEdificar());
     }
 
     /**
-     * Un jugador puede hipotecar una casilla siempre y cuando sea de su propiedad y esté en su turno
-     * @param casilla Casilla a comprobar
+     * Un jugador puede hipotecar una calle siempre y cuando sea de su propiedad y esté en su turno
+     * @param calle Calle a comprobar
      * @return 
      */
-    boolean puedoHipotecar(Casilla casilla) {
-        return esDeMiPropiedad(casilla) && !casilla.estaHipotecada();
+    boolean puedoHipotecar(Calle calle) {
+        return esDeMiPropiedad(calle) && !calle.estaHipotecada();
     }
 
     /**
-     * Un jugador va a poder pagar la hipoteca de una casilla cuando sea de su propiedad y pueda pagar el coste de hipoteca más un 10%
-     * @param casilla Casilla a comprobar
+     * Un jugador va a poder pagar la hipoteca de una calle cuando sea de su propiedad y pueda pagar el coste de hipoteca más un 10%
+     * @param calle Calle a comprobar
      * @return 
      */
-    boolean puedoPagarHipoteca(Casilla casilla) {
-        return (esDeMiPropiedad(casilla) && (casilla.calcularValorHipoteca() * 1.10) <= saldo);
+    boolean puedoPagarHipoteca(Calle calle) {
+        return (esDeMiPropiedad(calle) && (calle.calcularValorHipoteca() * 1.10) <= saldo);
     }
 
     /**
-     * Comprobar si una casilla puede ser vendida o no
-     * @param casilla Casilla que se quiere vender
-     * @return Cierto sólo si la casilla no está hipotecada.
+     * Comprobar si una calle puede ser vendida o no
+     * @param calle Casilla que se quiere vender
+     * @return Cierto sólo si la calle no está hipotecada.
      */
-    boolean puedoVenderPropiedad(Casilla casilla) {
-        return !casilla.estaHipotecada() && esDeMiPropiedad(casilla);
+    boolean puedoVenderPropiedad(Calle calle) {
+        return !calle.estaHipotecada() && esDeMiPropiedad(calle);
     }
 
     void setCartaLibertad(Sorpresa carta) {
@@ -254,15 +258,15 @@ public class Jugador {
 
     /**
      * El jugador vende una propiedad
-     * @param casilla Casilla a vender
+     * @param calle Calle a vender
      */
-    void venderPropiedad(Casilla casilla) {
-        int precioVenta = casilla.venderTitulo();
-        casilla.getTitulo().setPropietario(null);
-        casilla.setNumCasas(0);
-        casilla.setNumHoteles(0);
+    void venderPropiedad(Calle calle) {
+        int precioVenta = calle.venderTitulo();
+        calle.getTitulo().setPropietario(null);
+        calle.setNumCasas(0);
+        calle.setNumHoteles(0);
         modificarSaldo(precioVenta);
-        eliminarDeMisPropiedades(casilla);
+        eliminarDeMisPropiedades(calle);
     }
 
     /**
@@ -270,15 +274,15 @@ public class Jugador {
      * @return total de casas y hoteles
      */
     private int cuantasCasasHotelesTengo() {
-        return propiedades.stream().map(TituloPropiedad::getCasilla).map(c -> c.getNumHoteles() + c.getNumCasas()).reduce(0, Integer::sum);
+        return propiedades.stream().map(TituloPropiedad::getCalle).map(c -> c.getNumHoteles() + c.getNumCasas()).reduce(0, Integer::sum);
     }
 
     /**
-     * Elimina el titulo de propiedad de esa casilla de su lista de propiedades
-     * @param casilla Casilla a eliminar
+     * Elimina el titulo de propiedad de esa calle de su lista de propiedades
+     * @param calle Calle a eliminar
      */
-    private void eliminarDeMisPropiedades(Casilla casilla) {
-        propiedades.remove(casilla.getTitulo());
+    private void eliminarDeMisPropiedades(Calle calle) {
+        propiedades.remove(calle.getTitulo());
     }
 
     /**
@@ -287,7 +291,7 @@ public class Jugador {
      * @return Cierto si el jugador tiene entre sus propiedades el título de propiedad de esa casilla.
      */
     private boolean esDeMiPropiedad(Casilla casilla) {
-        return propiedades.stream().map(TituloPropiedad::getCasilla).anyMatch(c -> c.getNumeroCasilla() == casilla.getNumeroCasilla());
+        return propiedades.stream().map(TituloPropiedad::getCalle).anyMatch(c -> c.getNumeroCasilla() == casilla.getNumeroCasilla());
     }
 
     /**
