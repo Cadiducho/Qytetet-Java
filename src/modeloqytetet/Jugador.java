@@ -39,6 +39,10 @@ public class Jugador {
     public boolean getEncarcelado() {
         return encarcelado;
     }
+    
+    public int getFactorEspeculador() {
+        return factorEspeculador;
+    }
 
     /**
      * Comprobar si el jugador tiene propiedades
@@ -314,7 +318,7 @@ public class Jugador {
     
     @Override
     public String toString() {
-        return "Jugador{" + "nombre=" + nombre + ", encarcelado=" + encarcelado + ", saldo=" + saldo
+        return "Jugador{" + "nombre=" + nombre + ", factorEspeculador=" + factorEspeculador +", encarcelado=" + encarcelado + ", saldo=" + saldo
                 + ", casillaActual=" + casillaActual + ", cartaLibertad=" + cartaLibertad + "}";
     }
 

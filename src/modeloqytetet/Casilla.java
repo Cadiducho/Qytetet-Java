@@ -144,18 +144,18 @@ public class Casilla {
 
     /**
      * Comprobar si se pueden edificar más casas
-     * @return true si numCasas es menor que cuatro
+     * @return true si numCasas es menor que cuatro * factor especulador
      */
     public boolean sePuedeEdificarCasa() {
-        return (numCasas < 4);
+        return (numCasas < (4 * getTitulo().getPropietario().getFactorEspeculador()));
     }
 
     /**
      * Comprobar si se pueden edificar más hoteles
-     * @return true si numCasas es igual o mayor que cuatro numHoteles es menor que cuatro
+     * @return true si numCasas es igual o mayor que cuatro numHoteles es menor que cuatro * factor especulador
      */
     public boolean sePuedeEdificarHotel() {
-        return numHoteles < 4 && numCasas >= 4;
+        return numHoteles < (4 * getTitulo().getPropietario().getFactorEspeculador()) && numCasas >= 4;
     }
 
     /**
