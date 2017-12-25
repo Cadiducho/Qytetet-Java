@@ -25,8 +25,10 @@ public class Jugador {
         this.nombre = jugador.nombre;
         this.encarcelado = jugador.encarcelado;
         this.saldo = jugador.saldo;
-        this.propiedades = new ArrayList<>();
+        this.casillaActual = jugador.casillaActual;
+        this.cartaLibertad = jugador.cartaLibertad;
         
+        this.propiedades = new ArrayList<>();
         jugador.getPropiedades().forEach(propiedades::add);
     }
     
@@ -322,8 +324,14 @@ public class Jugador {
     
     @Override
     public String toString() {
-        return "Jugador{" + "nombre=" + nombre + ", factorEspeculador=" + factorEspeculador +", encarcelado=" + encarcelado + ", saldo=" + saldo
-                + ", casillaActual=" + casillaActual + ", cartaLibertad=" + cartaLibertad + "}";
+        String resumen = "Jugador " + nombre + ".";
+        
+        resumen += "\n " + (encarcelado ? "Sí" : "No") + " está encarcelado.";
+        resumen += "\n Tiene un factor especulador de " + factorEspeculador;
+        resumen += "\n Saldo: " + saldo + "$";
+        if (cartaLibertad != null) resumen += "\n" + cartaLibertad;
+        
+        return resumen;
     }
 
 }

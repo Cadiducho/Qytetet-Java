@@ -10,10 +10,10 @@ public class Dado {
     private Dado() { 
         rnd = new Random();
     }
-    
+    /*
     public static Dado getInstance() {
         return instance;
-    }
+    }*/
     
     /**
      * @return Devuelve un número aleatorio entre 1 y 6.

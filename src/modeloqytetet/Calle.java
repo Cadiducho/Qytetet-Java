@@ -165,12 +165,11 @@ public class Calle extends Casilla {
         if (tengoPropietario()) {
             resumen += "\n * Propietario: " + titulo.getPropietario().getName() + ". Tiene " + numCasas + " casas y " + numHoteles + " hoteles. "
                     + "Alquiler: " + cobrarAlquiler() + "$. Hipoteca: " + calcularValorHipoteca() + "$. Hipotecada: " + estaHipotecada();
+            if (propietarioEncarcelado()) {
+                resumen += "\n * Su propietario está encarcelado. ";
+            }
         } else {
             resumen += "\n * En venta por " + coste + "$: " + titulo;
-        }
-
-        if (propietarioEncarcelado()) {
-            resumen += "\n * Su propietario está encarcelado. ";
         }
         return resumen;
     }
