@@ -12,7 +12,7 @@ public class Jugador {
     private Casilla casillaActual;
     private Sorpresa cartaLibertad;
     private List<TituloPropiedad> propiedades;
-    protected int factorEspeculador = 1;
+    protected static int factorEspeculador = 1;
 
     public Jugador(String nombre) {
         this.nombre = nombre;
