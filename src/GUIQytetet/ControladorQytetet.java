@@ -46,9 +46,9 @@ public class ControladorQytetet extends javax.swing.JFrame {
         vistaQytetet.actualizar(jugador.toString(), casilla.toString(), juego.getSorpresaActual() != null ? juego.getSorpresaActual().toString() : null);
         
         if (jugador.getEncarcelado()) {
-            this.jbSalirDado.setEnabled(true);
-            this.jbSalirPagando.setEnabled(true);
-            this.jbJugar.setEnabled(false);
+            jbSalirDado.setEnabled(!jbSalirDado.isEnabled()); //si ya están activados, desactivar y pasar turno. De lo contrario sólo puedes intentar salir
+            jbSalirPagando.setEnabled(!jbSalirPagando.isEnabled());
+            jbJugar.setEnabled(false);
         }
     }
 
@@ -173,16 +173,15 @@ public class ControladorQytetet extends javax.swing.JFrame {
     }//GEN-LAST:event_jbSalirDadoActionPerformed
 
     private void intentarSalirCarcel(MetodoSalirCarcel metodo) {
-        this.jbSalirDado.setEnabled(true);
-        this.jbSalirPagando.setEnabled(true);
-
         boolean sale = juego.intentarSalirCarcel(metodo);
         if (sale) {
             mostrar("Has salido de la cárcel. Ahora puedes seguir jugando");
+            this.jbSalirDado.setEnabled(false);
+            this.jbSalirPagando.setEnabled(false);
             this.jbJugar.setEnabled(true);
         } else {
             mostrar("No has podido salir de la cárcel. Se pasa el turno");
-            this.jbSiguienteJugador.setEnabled(true);
+            finTurno();
         }
     }
     
@@ -205,10 +204,20 @@ public class ControladorQytetet extends javax.swing.JFrame {
                 } else {
                     mostrar("Esta casila no tiene propietario");
                     this.jbComprarPropiedad.setEnabled(true);
+                    
+                    finTurno();
                 }
                 break;
-
+            case JUEZ:
+                mostrar("El juez te ha mando a la cárcel");
+            case PARKING:
+            case IMPUESTO:
+            case SALIDA:
+            case CARCEL:
+                finTurno();
+                break;
         }
+        actualizar(juego);
     }//GEN-LAST:event_jbJugarActionPerformed
 
     private void jbAplicarSorpresaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbAplicarSorpresaActionPerformed
@@ -217,8 +226,7 @@ public class ControladorQytetet extends javax.swing.JFrame {
         if (nuevaCasillaPropietario) {
             mostrar("Has caído en una propiedad con propietario y has pagado su alquiler");
         }
-        this.jbSiguienteJugador.setEnabled(true);
-        this.actualizar(juego);
+        finTurno();
     }//GEN-LAST:event_jbAplicarSorpresaActionPerformed
 
     private void jbComprarPropiedadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbComprarPropiedadActionPerformed
@@ -229,7 +237,7 @@ public class ControladorQytetet extends javax.swing.JFrame {
         } else {
             mostrar("No puedes comprar la casilla " + jugador.getCasillaActual().getNumeroCasilla());
         }
-        this.actualizar(juego);
+        finTurno();
     }//GEN-LAST:event_jbComprarPropiedadActionPerformed
 
     private void jbSiguienteJugadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbSiguienteJugadorActionPerformed
@@ -239,7 +247,6 @@ public class ControladorQytetet extends javax.swing.JFrame {
             mostrar("Ha terminado el juego porque " + jugador.getName() + " ha caído en bancarrota");
             
             this.jbJugar.setEnabled(false);
-            this.jbSiguienteJugador.setEnabled(false);
         } else {
             // gestionar final de turno
             jugador = juego.siguienteJugador();
