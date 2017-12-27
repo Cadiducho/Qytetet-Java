@@ -197,7 +197,7 @@ public class Qytetet {
         boolean libre = false;
         
         if (metodo == MetodoSalirCarcel.TIRANDODADO) {
-            int dado = GUIQytetet.Dado.getInstance().nextNumber();
+            int dado = GUIQytetet.Dado.getInstance().nextNumber("Tira para salir de la cárcel", "Deberás obtener un 6");
             libre = dado > 5;
         } else if (metodo == MetodoSalirCarcel.PAGANDOLIBERTAD) {
             libre = jugadorActual.pagarLibertad(PRECIO_LIBERTAD);
@@ -214,7 +214,7 @@ public class Qytetet {
      * @return true si la casilla en la que cae tiene propietario
      */
     public boolean jugar() {
-        int valorDado = GUIQytetet.Dado.getInstance().nextNumber();
+        int valorDado = GUIQytetet.Dado.getInstance().nextNumber("Tira para determinar tu movimiento", "");
         Casilla casillaPosicion = jugadorActual.getCasillaActual();
         Casilla nuevaCasilla = tablero.obtenerNuevaCasilla(casillaPosicion, valorDado);
         boolean tienePropietario = jugadorActual.actualizarPosicion(nuevaCasilla);
