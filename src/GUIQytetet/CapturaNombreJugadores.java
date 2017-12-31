@@ -7,6 +7,8 @@ package GUIQytetet;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.swing.JOptionPane;
 
 /**
@@ -128,9 +130,10 @@ public class CapturaNombreJugadores extends javax.swing.JDialog {
         this.dispose();
     }
 
-    public ArrayList<String> obtenerNombres() {
+    public List<String> obtenerNombres() {
         this.setVisible(true);
         return nombres;
+        //return Arrays.asList("Jugador 1", "Jugador 2");
     }
 
     private javax.swing.JLabel jLabel1;

@@ -8,7 +8,6 @@ import modeloqytetet.Casilla;
 import modeloqytetet.Jugador;
 import modeloqytetet.MetodoSalirCarcel;
 import modeloqytetet.Qytetet;
-import modeloqytetet.TipoCasilla;
 import modeloqytetet.TituloPropiedad;
 
 public class ControladorQytetet {
