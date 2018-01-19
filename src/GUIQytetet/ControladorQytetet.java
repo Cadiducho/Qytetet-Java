@@ -277,6 +277,7 @@ public class ControladorQytetet extends javax.swing.JFrame {
             this.jbAplicarSorpresa.setEnabled(false);
             this.jbSalirDado.setEnabled(false);
             this.jbSalirPagando.setEnabled(false);
+            this.jTabbedPanel.setSelectedIndex(0);
         }
         this.actualizar(juego);
     }//GEN-LAST:event_jbSiguienteJugadorActionPerformed

@@ -108,7 +108,7 @@ public class ControladorQytetet {
             
             if (jugador.tengoPropiedades() && !jugador.getEncarcelado() && jugador.getSaldo() > 0) {
                 int gestion = vista.menuGestionInmobiliaria();
-                if (gestion != 0) {
+                while (gestion != 0) {
                     Casilla editCasilla = elegirPropiedad(jugador.getPropiedades().stream().map(TituloPropiedad::getCalle).collect(Collectors.toList()));
                     switch (gestion) {
                         case 1: 
@@ -131,6 +131,11 @@ public class ControladorQytetet {
                             boolean cancelada = juego.cancelarHipoteca(editCasilla);
                             vista.mostrar(" -> " + (cancelada ? "Has cancelado" : "No has podido cancelar") + " la hipoteca de la casilla");
                             break;
+                    }
+                    if (jugador.tengoPropiedades()) { //ha podido vvenderlas
+                        gestion = vista.menuGestionInmobiliaria();
+                    } else {
+                        gestion = 0; //salir de la gestión
                     }
                 }
             }

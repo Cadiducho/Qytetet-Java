@@ -2,14 +2,9 @@ package GUIQytetet;
 
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
 import modeloqytetet.Qytetet;
 import modeloqytetet.TituloPropiedad;
 
-/**
- *
- * @author cadid
- */
 public class VistaGestionInmobiliaria extends javax.swing.JPanel {
     
     /**
@@ -168,11 +163,7 @@ public class VistaGestionInmobiliaria extends javax.swing.JPanel {
     }//GEN-LAST:event_jbEdificarHotelActionPerformed
 
     private void jComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxActionPerformed
-        JComboBox<String> box = (JComboBox<String>) evt.getSource();
 
-        TituloPropiedad propiedad = Qytetet.getInstance().getJugadorActual().getPropiedades().get(box.getSelectedIndex());
-
-        System.out.println(propiedad);
     }//GEN-LAST:event_jComboBoxActionPerformed
 
     private void jbEdificarCasaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbEdificarCasaActionPerformed
@@ -193,7 +184,7 @@ public class VistaGestionInmobiliaria extends javax.swing.JPanel {
 
     private void handleGestion(int type) {
         Qytetet juego = Qytetet.getInstance();
-        TituloPropiedad propiedad = Qytetet.getInstance().getJugadorActual().getPropiedades().get(jComboBox.getSelectedIndex());
+        TituloPropiedad propiedad = juego.getJugadorActual().getPropiedades().get(jComboBox.getSelectedIndex());
         switch (type) {
             case 1:
                 boolean edificada = Qytetet.getInstance().edificarCasa(propiedad.getCalle());
@@ -215,8 +206,11 @@ public class VistaGestionInmobiliaria extends javax.swing.JPanel {
                 boolean cancelada = juego.cancelarHipoteca(propiedad.getCalle());
                 ControladorQytetet.mostrar((cancelada ? "Has cancelado" : "No has podido cancelar") + " la hipoteca de la casilla");
         }
+        ControladorQytetet.getInstance().actualizar(juego); //actualizar interfaz con las gestiones hechas
         
-        ControladorQytetet.getInstance().finGestion();
+        if (juego.getJugadorActual().getPropiedades().isEmpty()) { //si ha vendido sus propiedades ya no se puede gestionar más
+            ControladorQytetet.getInstance().finGestion();
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
