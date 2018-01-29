@@ -2,6 +2,7 @@ package GUIQytetet;
 
 import java.util.List;
 import javax.swing.JOptionPane;
+import modeloqytetet.Calle;
 import modeloqytetet.Casilla;
 import modeloqytetet.Jugador;
 import modeloqytetet.MetodoSalirCarcel;
@@ -79,6 +80,7 @@ public class ControladorQytetet extends javax.swing.JFrame {
         jTabbedPanel = new javax.swing.JTabbedPane();
         vistaQytetet = new GUIQytetet.VistaQytetet();
         vistaGestiones = new GUIQytetet.VistaGestionInmobiliaria();
+        jbEdificarCasaAqui = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -140,6 +142,14 @@ public class ControladorQytetet extends javax.swing.JFrame {
         jTabbedPanel.addTab("Resumen", vistaQytetet);
         jTabbedPanel.addTab("Gestiones", vistaGestiones);
 
+        jbEdificarCasaAqui.setText("Edificar casa aquí");
+        jbEdificarCasaAqui.setEnabled(false);
+        jbEdificarCasaAqui.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbEdificarCasaAquiActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -149,17 +159,19 @@ public class ControladorQytetet extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jbSalirDado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jbSalirPagando, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 13, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jbJugar, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jbGestionInmobiliaria, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jbComprarPropiedad, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jbAplicarSorpresa)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jbAplicarSorpresa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jbEdificarCasaAqui, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(jbSiguienteJugador)
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jTabbedPanel)
@@ -174,16 +186,19 @@ public class ControladorQytetet extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jbSiguienteJugador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jbJugar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jbAplicarSorpresa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jbSalirDado)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jbSalirPagando)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jbComprarPropiedad)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jbComprarPropiedad, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jbAplicarSorpresa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jbGestionInmobiliaria)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jbGestionInmobiliaria)
+                            .addComponent(jbEdificarCasaAqui))))
                 .addContainerGap())
         );
 
@@ -278,6 +293,9 @@ public class ControladorQytetet extends javax.swing.JFrame {
             this.jbSalirDado.setEnabled(false);
             this.jbSalirPagando.setEnabled(false);
             this.jTabbedPanel.setSelectedIndex(0);
+            
+            //EXAMEN
+            this.jbEdificarCasaAqui.setEnabled(false);
         }
         this.actualizar(juego);
     }//GEN-LAST:event_jbSiguienteJugadorActionPerformed
@@ -290,10 +308,23 @@ public class ControladorQytetet extends javax.swing.JFrame {
         this.jTabbedPanel.setSelectedIndex(1);
     }//GEN-LAST:event_jbGestionInmobiliariaActionPerformed
 
+    //EXAMEN
+    private void jbEdificarCasaAquiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbEdificarCasaAquiActionPerformed
+        juego.edificarCasa(juego.getJugadorActual().getCasillaActual());
+        mostrar("Has edificado una casa aquí");
+        actualizar(juego); //Actualizar para que se muestre la nueva casa construida
+    }//GEN-LAST:event_jbEdificarCasaAquiActionPerformed
+    //FIN EXAMEN
+    
     public void finGestion() {
         this.jbGestionInmobiliaria.setEnabled(false);
         this.jTabbedPanel.setEnabledAt(1, false);
         this.jTabbedPanel.setSelectedIndex(0);
+        
+        //Examen: evitar que si se han vendido las propiedades pueda construir sobre 
+        // donde perdió su propiedad
+        this.jbEdificarCasaAqui.setEnabled(false);
+        //Fin examen
     }
     
     private void finTurno() {
@@ -301,6 +332,17 @@ public class ControladorQytetet extends javax.swing.JFrame {
             this.jbGestionInmobiliaria.setEnabled(true);
             this.jTabbedPanel.setEnabledAt(1, true);
         }
+        
+        //EXAMEN
+        if (jugador.getCasillaActual().soyEdificable()) {
+            Calle calle = (Calle) jugador.getCasillaActual();
+            if (calle.getTitulo().tengoPropietario() && calle.sePuedeEdificarCasa()) {
+                if (jugador.puedoEdificarCasa(calle)) {  
+                    this.jbEdificarCasaAqui.setEnabled(true);
+                }
+            }
+        }
+        //FIN EXAMEN
         
         this.jbSiguienteJugador.setEnabled(true);
         this.actualizar(juego);
@@ -320,6 +362,7 @@ public class ControladorQytetet extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPanel;
     private javax.swing.JButton jbAplicarSorpresa;
     private javax.swing.JButton jbComprarPropiedad;
+    private javax.swing.JButton jbEdificarCasaAqui;
     private javax.swing.JButton jbGestionInmobiliaria;
     private javax.swing.JButton jbJugar;
     private javax.swing.JButton jbSalirDado;

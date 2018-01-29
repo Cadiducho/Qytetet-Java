@@ -155,7 +155,7 @@ public class Calle extends Casilla {
      * @return cierto sólo si es una casilla de tipo CALLE.
      */
     @Override
-    boolean soyEdificable() {
+    public boolean soyEdificable() { //Examen -> public
         return true;
     }
     

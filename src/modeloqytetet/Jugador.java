@@ -133,13 +133,20 @@ public class Jugador {
         setEncarcelado(true);
     }
 
+    
     /**
      * Añade al saldo la cantidad del argumento.
      * Si el argumento es negativo, el saldo quedará reducido. 
      * @param cantidad Cantidad que modificará el saldo
      */
     void modificarSaldo(int cantidad) {
-        this.saldo += cantidad;
+        //EXAMEN: No puede ser menor a -2000
+        if ((saldo + cantidad) < -2000) {
+            this.saldo = -2000;
+        } else {
+            this.saldo += cantidad;
+        }
+        //FIN EXAMEN
     }
     
     void setSaldo(int cantidad) {
@@ -198,7 +205,7 @@ public class Jugador {
      * @param calle La calle a edificar
      * @return true si es mía y puedo pagarlo
      */
-    boolean puedoEdificarCasa(Calle calle) {
+    public boolean puedoEdificarCasa(Calle calle) { //Examen -> public
         return esDeMiPropiedad(calle) && tengoSaldo(calle.getPrecioEdificar());
     }
 

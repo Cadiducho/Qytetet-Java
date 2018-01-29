@@ -31,7 +31,7 @@ public abstract class Casilla {
      * Comprobar si se puede edificar en la casilla
      * @return cierto sólo si es una casilla de tipo CALLE.
      */
-    abstract boolean soyEdificable();
+    public abstract boolean soyEdificable(); //Examen -> public
 
     @Override
     public String toString() {
